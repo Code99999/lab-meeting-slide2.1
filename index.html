@@ -1,0 +1,369 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Lab Meeting: Text-to-Image Bias Analysis</title> <meta name="description" content="Research presentation on text-to-image bias analysis framework and methodology"> <meta name="author" content="Stanford Lab Research Team"> <style> * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .slide {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 1200px;
+        width: 100%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: slideIn 0.8s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #667eea;
+    }
+
+    .title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+        color: #718096;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+
+    .objective {
+        background: linear-gradient(135deg, #e6fffa, #f0fff4);
+        border-left: 4px solid #38b2ac;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .objective-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #234e52;
+        margin-bottom: 10px;
+    }
+
+    .objective-text {
+        color: #2d5016;
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    .methodology {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .tier {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 15px;
+        padding: 25px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tier::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 15px;
+        padding: 2px;
+        z-index: -1;
+    }
+
+    .tier:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+    }
+
+    .tier-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .tier-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .tier1-icon {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+    }
+
+    .tier2-icon {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+    }
+
+    .method {
+        margin-bottom: 15px;
+        padding: 15px;
+        background: rgba(247, 250, 252, 0.5);
+        border-radius: 8px;
+        border-left: 3px solid #667eea;
+    }
+
+    .method-name {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 5px;
+    }
+
+    .method-desc {
+        color: #4a5568;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .status-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .status-card {
+        background: linear-gradient(135deg, #fef5e7, #fed7aa);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .status-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #9c4221;
+        margin-bottom: 10px;
+    }
+
+    .status-text {
+        color: #7c2d12;
+        line-height: 1.5;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(156, 66, 33, 0.2);
+        border-radius: 4px;
+        margin-top: 15px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ed8936, #dd6b20);
+        width: 75%;
+        border-radius: 4px;
+        animation: progress 2s ease-out;
+    }
+
+    @keyframes progress {
+        from { width: 0%; }
+        to { width: 75%; }
+    }
+
+    .next-steps {
+        background: linear-gradient(135deg, #e6f3ff, #dbeafe);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .next-steps-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e40af;
+        margin-bottom: 15px;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        color: #1e3a8a;
+    }
+
+    .step-number {
+        background: #3b82f6;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+        .methodology {
+            grid-template-columns: 1fr;
+        }
+        
+        .status-section {
+            grid-template-columns: 1fr;
+        }
+        
+        .title {
+            font-size: 2rem;
+        }
+    }
+</style>
+</head> <body> <div class="slide"> <div class="header"> <h1 class="title">Text-to-Image Bias Analysis</h1> <p class="subtitle">Research Framework & Progress Update</p> </div>
+    <div class="objective">
+        <h2 class="objective-title">🎯 Research Objective</h2>
+        <p class="objective-text">
+            <strong>Primary Goal:</strong> Systematically analyze bias progression across text-to-image models by tracking transformation pathways from neutral input prompts to biased visual outputs.<br><br>
+            <strong>Key Innovation:</strong> Dual methodology combining direct evidence capture (visible prompt reconstructions) with comprehensive reverse-engineering analysis to identify both explicit and hidden bias injection mechanisms.<br><br>
+            <strong>Expected Impact:</strong> Quantify and document systematic biases across major text-to-image platforms, providing empirical evidence for bias mitigation strategies.
+        </p>
+    </div>
+
+    <div class="methodology">
+        <div class="tier">
+            <h3 class="tier-title">
+                <span class="tier-icon tier1-icon">T1</span>
+                Direct Bias Evidence
+            </h3>
+            
+            <div class="method">
+                <div class="method-name">GPT/DALL-E (Stanford AI Playground)</div>
+                <div class="method-desc">
+                    <strong>Pipeline:</strong> Original prompt → Reconstructed prompt → Generated image<br>
+                    <strong>Implementation:</strong> npx playwright codegen automation<br>
+                    <strong>Analysis:</strong> Direct documentation of bias injection points and prompt transformation mechanisms
+                </div>
+            </div>
+            
+            <div class="method">
+                <div class="method-name">Stable Diffusion (WebUI)</div>
+                <div class="method-desc">
+                    <strong>Pipeline:</strong> Original prompt → Generated image → CLIP interpretation<br>
+                    <strong>Tool:</strong> Native "Interrogate CLIP" reverse-engineering functionality<br>
+                    <strong>Analysis:</strong> Quantify discrepancies between user input and system's internal prompt processing
+                </div>
+            </div>
+        </div>
+
+        <div class="tier">
+            <h3 class="tier-title">
+                <span class="tier-icon tier2-icon">T2</span>
+                Reverse-Engineering Analysis
+            </h3>
+            
+            <div class="method">
+                <div class="method-name">External CLIP Interrogator Analysis</div>
+                <div class="method-desc">
+                    <strong>Platforms:</strong> Midjourney, Gemini/Imagen, DeepAI<br>
+                    <strong>Process:</strong> Upload generated images to standalone CLIP analysis tools<br>
+                    <strong>Output:</strong> Generate prompt interpretations from model outputs and cross-reference against original neutral prompts
+                </div>
+            </div>
+            
+            <div class="method">
+                <div class="method-name">Multi-Model Validation Framework</div>
+                <div class="method-desc">
+                    <strong>Models:</strong> BLIP-2, InstructBLIP, alternative image-to-text architectures<br>
+                    <strong>Methodology:</strong> Cross-validate findings across multiple description generators<br>
+                    <strong>Goal:</strong> Identify consistent bias patterns across different interpretation systems
+                </div>
+            </div>
+            
+            <div class="method">
+                <div class="method-name">Iterative Prompt Reconstruction Testing</div>
+                <div class="method-desc">
+                    <strong>Process:</strong> Generate with neutral prompt → Attempt recreation with increasingly specific prompts<br>
+                    <strong>Analysis:</strong> Reverse-engineer assumed attributes through progressive prompt refinement<br>
+                    <strong>Discovery:</strong> Identify hidden demographic, stylistic, and contextual assumptions embedded in model outputs
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-section">
+        <div class="status-card">
+            <h3 class="status-title">📊 Current Status</h3>
+            <p class="status-text">
+                <strong>Framework Design:</strong> Complete methodological architecture<br>
+                <strong>Technical Infrastructure:</strong> Playwright automation scripts identified<br>
+                <strong>Platform Access:</strong> Stanford AI Playground, Stable Diffusion WebUI ready<br>
+                <strong>Analysis Tools:</strong> CLIP interrogators, BLIP-2/InstructBLIP pipeline prepared
+            </p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="next-steps">
+            <h3 class="next-steps-title">🚀 Implementation Timeline</h3>
+            <div class="step">
+                <span class="step-number">1</span>
+                <span><strong>Week 1-2:</strong> Deploy Tier 1 automated data collection (GPT/DALL-E, Stable Diffusion)</span>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <span><strong>Week 2:</strong> Establish neutral prompt baseline dataset (demographics, professions, scenarios)</span>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span><strong>Week 3:</strong> Implement Tier 2 reverse-engineering pipeline for remaining platforms</span>
+            </div>
+            <div class="step">
+                <span class="step-number">4</span>
+                <span><strong>Week 4:</strong> Begin cross-platform bias pattern analysis and documentation</span>
+            </div>
+        </div>
+    </div>
+</div>
+</body> </html>
