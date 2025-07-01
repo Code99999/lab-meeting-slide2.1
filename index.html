@@ -529,15 +529,15 @@
     <div class="slide">
         <div class="header">
             <h1 class="title">Text-to-Image Bias Analysis</h1>
-            <p class="subtitle">Uncovering Hidden Assumptions in AI Image Generation</p>
+            <p class="subtitle">Finding Hidden Biases in AI Image Generation</p>
         </div>
 
         <div class="objective">
-            <h2 class="objective-title">🎯 What We're Actually Trying to Figure Out</h2>
+            <h2 class="objective-title">🎯 What We're Trying to Figure Out</h2>
             <p class="objective-text">
-                <strong>The Big Question:</strong> When you ask DALL-E to draw "a doctor," why does it almost always show a white guy in a lab coat? We're building a system to catch these models red-handed when they inject their biases into supposedly neutral prompts.<br><br>
-                <strong>Our Approach:</strong> We're not just guessing at bias—we're documenting it. Some platforms actually show you their "improved" version of your prompt (looking at you, ChatGPT), while others hide their assumptions. We're using both direct evidence and some clever reverse-engineering to expose what's really happening under the hood.<br><br>
-                <strong>Why This Matters:</strong> These models are being deployed everywhere. If we can quantify exactly how and where bias creeps in, we can actually do something about it instead of just complaining that "AI is biased."
+                <strong>The Problem:</strong> When you ask DALL-E to draw "a doctor," it usually shows a white man in a lab coat. We want to build a system that catches these models when they add their own assumptions to neutral prompts.<br><br>
+                <strong>Our Method:</strong> Instead of just guessing at bias, we're documenting it. Some platforms show you their "improved" version of your prompt (like ChatGPT), while others hide what they're doing. We'll use both direct evidence and some detective work to figure out what's happening behind the scenes.<br><br>
+                <strong>Why This Matters:</strong> These models are being used everywhere. If we can measure exactly how and where bias shows up, we can actually fix it instead of just saying "AI is biased."
             </p>
         </div>
 
@@ -545,24 +545,24 @@
             <div class="tier">
                 <h3 class="tier-title">
                     <span class="tier-icon tier1-icon">T1</span>
-                    The Easy Wins (Direct Evidence)
+                    Direct Evidence (The Easy Cases)
                 </h3>
                 
                 <div class="method">
-                    <div class="method-name">GPT/DALL-E (Stanford AI Playground)</div>
+                    <div class="method-name">ChatGPT/DALL-E (Stanford AI Playground)</div>
                     <div class="method-desc">
-                        <strong>What we get:</strong> Original prompt → "Improved" prompt → Generated image<br>
-                        <strong>How we're doing it:</strong> Playwright automation (because clicking through hundreds of prompts manually would suck)<br>
-                        <strong>The gold mine:</strong> We can literally see where ChatGPT decides to "helpfully" add details you never asked for
+                        <strong>What we get:</strong> Your prompt → ChatGPT's "improved" prompt → The image<br>
+                        <strong>How we do it:</strong> Automated scripts (no manual clicking through hundreds of prompts)<br>
+                        <strong>The payoff:</strong> We can see exactly where ChatGPT decides to add details you never asked for
                     </div>
                 </div>
                 
                 <div class="method">
-                    <div class="method-name">Stable Diffusion (WebUI)</div>
+                    <div class="method-name">Stable Diffusion (Local Setup)</div>
                     <div class="method-desc">
-                        <strong>The pipeline:</strong> Original prompt → Generated image → CLIP's interpretation of what it thinks it made<br>
-                        <strong>Secret weapon:</strong> The "Interrogate CLIP" button that nobody uses<br>
-                        <strong>What we learn:</strong> How much the model's internal understanding drifts from your actual words
+                        <strong>The process:</strong> Your prompt → Generated image → CLIP analyzes what it thinks it made<br>
+                        <strong>Our tool:</strong> The "Interrogate CLIP" feature most people ignore<br>
+                        <strong>What we learn:</strong> How much the model's understanding differs from your actual words
                     </div>
                 </div>
             </div>
@@ -570,33 +570,33 @@
             <div class="tier">
                 <h3 class="tier-title">
                     <span class="tier-icon tier2-icon">T2</span>
-                    The Detective Work (Reverse Engineering)
+                    Reverse Engineering
                 </h3>
                 
                 <div class="method">
-                    <div class="method-name">External CLIP Interrogation</div>
+                    <div class="method-name">External CLIP Analysis</div>
                     <div class="method-desc">
-                        <strong>Target platforms:</strong> Midjourney, Gemini/Imagen, DeepAI (the ones that don't show their work)<br>
-                        <strong>The process:</strong> Generate images, feed them to CLIP interrogators, see what prompts CLIP thinks would create these images<br>
-                        <strong>The reveal:</strong> Compare the reconstructed prompts to your original—spot the assumptions
+                        <strong>Target platforms:</strong> Midjourney, Gemini, DeepAI (the ones that don't show their work)<br>
+                        <strong>The process:</strong> Generate images, feed them to CLIP tools, see what prompts CLIP thinks would create these images<br>
+                        <strong>The reveal:</strong> Compare the reconstructed prompts to your original—spot the hidden assumptions
                     </div>
                 </div>
                 
                 <div class="method">
-                    <div class="method-name">Cross-Model Reality Check</div>
+                    <div class="method-name">Multiple Model Cross-Check</div>
                     <div class="method-desc">
-                        <strong>The squad:</strong> BLIP-2, InstructBLIP, and whatever other image-to-text models we can get our hands on<br>
-                        <strong>Why multiple models:</strong> If three different systems all "see" the same bias in an image, it's probably real<br>
-                        <strong>Bonus points:</strong> Catch biases that are so normalized even CLIP doesn't notice them
+                        <strong>Our tools:</strong> BLIP-2, InstructBLIP, and other image-to-text models<br>
+                        <strong>Why multiple models:</strong> If three different systems all see the same bias in an image, it's probably real<br>
+                        <strong>Bonus:</strong> Catch biases that are so common even CLIP doesn't notice them
                     </div>
                 </div>
                 
                 <div class="method">
-                    <div class="method-name">The Prompt Archaeology Method</div>
+                    <div class="method-name">Prompt Reconstruction</div>
                     <div class="method-desc">
-                        <strong>The game:</strong> Start with "a teacher," generate image, then try to recreate it with increasingly specific prompts<br>
-                        <strong>The discovery process:</strong> "Hmm, to recreate this I need to specify 'female,' 'elementary school,' 'apple on desk'..."<br>
-                        <strong>The payoff:</strong> Map out all the hidden assumptions the model baked into your simple request
+                        <strong>The experiment:</strong> Start with "a teacher," generate image, then try to recreate it with specific prompts<br>
+                        <strong>The discovery:</strong> "To recreate this I need to add 'female,' 'elementary school,' 'apple on desk'..."<br>
+                        <strong>The insight:</strong> Map out all the hidden assumptions the model added to your simple request
                     </div>
                 </div>
             </div>
@@ -604,12 +604,12 @@
 
         <div class="status-section">
             <div class="status-card">
-                <h3 class="status-title">📊 Where We Stand</h3>
+                <h3 class="status-title">📊 Current Status</h3>
                 <p class="status-text">
-                    <strong>Framework:</strong> Built and ready to deploy—no more theoretical hand-waving<br>
-                    <strong>Technical setup:</strong> Playwright scripts are written, platform access is sorted<br>
-                    <strong>Baseline data:</strong> We've got our neutral prompt sets ready (professions, activities, demographic-free scenarios)<br>
-                    <strong>Analysis pipeline:</strong> CLIP tools tested, BLIP models configured, everything's locked and loaded
+                    <strong>Framework:</strong> Built and ready to use<br>
+                    <strong>Technical setup:</strong> Scripts written, platform access secured<br>
+                    <strong>Test data:</strong> Neutral prompt sets prepared (professions, activities, general scenarios)<br>
+                    <strong>Analysis tools:</strong> CLIP tools tested, BLIP models configured and ready
                 </p>
                 <div class="progress-bar">
                     <div class="progress-fill"></div>
@@ -617,22 +617,22 @@
             </div>
 
             <div class="next-steps">
-                <h3 class="next-steps-title">🔬 The Analysis Pipeline</h3>
+                <h3 class="next-steps-title">🔬 Analysis Pipeline</h3>
                 <div class="step">
                     <span class="step-number">1</span>
-                    <span><strong>AI-Powered Detection:</strong> FairFace and DeepFace for automated race and gender classification of generated images</span>
+                    <span><strong>Automated Detection:</strong> Use FairFace and DeepFace to automatically identify race and gender in generated images</span>
                 </div>
                 <div class="step">
                     <span class="step-number">2</span>
-                    <span><strong>Human Perception Layer:</strong> Custom stereotype severity index website for human evaluators to rate bias intensity</span>
+                    <span><strong>Human Evaluation:</strong> Custom website for people to rate how biased each image looks</span>
                 </div>
                 <div class="step">
                     <span class="step-number">3</span>
-                    <span><strong>Cross-Validation:</strong> Compare AI detection results with human perception scores to identify subtle biases</span>
+                    <span><strong>Cross-Validation:</strong> Compare computer results with human ratings to catch subtle biases</span>
                 </div>
                 <div class="step">
                     <span class="step-number">4</span>
-                    <span><strong>Pattern Analysis:</strong> Statistical correlation between prompt modifications and demographic shifts in outputs</span>
+                    <span><strong>Pattern Analysis:</strong> Find connections between prompt changes and demographic shifts in the results</span>
                 </div>
             </div>
         </div>
